@@ -883,7 +883,7 @@ void touch_send_uevent(struct touch_core_data *ts, int type)
 			break;
 >>>>>>> e9abc2cf2d9f (lge_touch: Send custom keycodes for supported gestures)
 	}
-	if (type == LPWG_DOUBLE_TAP) {
+	if (type == TOUCH_UEVENT_KNOCK) {
 		input_report_key(ts->input, KEY_WAKEUP, 1);
 		TOUCH_I("Simulate power button depress");
 		input_sync(ts->input);
