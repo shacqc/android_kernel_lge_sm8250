@@ -591,6 +591,9 @@ error:
 	return ret;
 }
 
+extern int tap2wake_status;
+extern int lpwg_status;
+
 static void touch_suspend(struct device *dev)
 {
 	struct touch_core_data *ts = to_touch_core(dev);
@@ -619,6 +622,17 @@ static void touch_suspend(struct device *dev)
 	if (0)
 		ret = md->m_driver.suspend(dev);
 	mutex_unlock(&ts->lock);
+
+	if (ts->driver->lpwg) {
+	    int tap2wake_knocked[4] = { 0, 0, 1, 0 };
+	    tap2wake_knocked[0] = tap2wake_status;
+		mutex_lock(&ts->lock);
+		TOUCH_I("tap2wake %s\n", (tap2wake_status) ? "Enabled" : "Disabled");
+		ts->driver->lpwg(ts->dev, LPWG_MASTER, tap2wake_knocked);
+		lpwg_status = tap2wake_status;
+		mutex_unlock(&ts->lock);
+	}
+
 	TOUCH_I("%s End\n", __func__);
 
 	if (ret == 1)
@@ -654,6 +668,17 @@ static void touch_resume(struct device *dev)
 		ret = md->m_driver.resume(dev);
 	atomic_set(&ts->state.fb, FB_RESUME);
 	mutex_unlock(&ts->lock);
+
+	if (ts->driver->lpwg) {
+		int tap2wake_knocked[4] = { 0, 1, 1, 0 };
+		tap2wake_knocked[0] = tap2wake_status;
+		mutex_lock(&ts->lock);
+		TOUCH_I("tap2wake %s\n", (tap2wake_status) ? "Enabled" : "Disabled");
+		ts->driver->lpwg(ts->dev, LPWG_MASTER, tap2wake_knocked);
+		lpwg_status = tap2wake_status;
+		mutex_unlock(&ts->lock);
+	}
+	
 	TOUCH_I("%s End\n", __func__);
 
 	if (ret == 0)
@@ -818,7 +843,6 @@ void touch_send_uevent(struct touch_core_data *ts, int type)
 				KOBJ_CHANGE, uevent_str[type]);
 		TOUCH_I("%s\n",  uevent_str[type][0]);
 		touch_report_all_event(ts);
-<<<<<<< HEAD
 	} else {
 		reinit_completion(&ts->uevent_complete);
 
@@ -840,7 +864,6 @@ void touch_send_uevent(struct touch_core_data *ts, int type)
 		} else {
 			TOUCH_I("%s  is not sent\n", uevent_str[type][0]);
 		}
-=======
 	}
 	switch (type) {
 		case TOUCH_UEVENT_KNOCK:
@@ -881,15 +904,6 @@ void touch_send_uevent(struct touch_core_data *ts, int type)
 			break;
 		default:
 			break;
->>>>>>> e9abc2cf2d9f (lge_touch: Send custom keycodes for supported gestures)
-	}
-	if (type == TOUCH_UEVENT_KNOCK) {
-		input_report_key(ts->input, KEY_WAKEUP, 1);
-		TOUCH_I("Simulate power button depress\n");
-		input_sync(ts->input);
-		input_report_key(ts->input, KEY_WAKEUP, 0);
-		TOUCH_I("Simulate power button release\n");
-		input_sync(ts->input);
 	}
 }
 
