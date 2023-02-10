@@ -48,6 +48,10 @@ extern void dd_set_force_disconnection(bool val);
 extern bool dd_get_force_disconnection(void);
 extern void hallic_handle_5v_boost_gpios(int state);
 extern int is_dd_connected(void);
+extern bool is_dp_connected(void);
+extern bool is_dd_display_recovery_working(void);
+extern bool is_dd_display_wait_real_disconnection(void);
+extern bool is_dd_powermode(void);
 #endif
 
 #ifdef CONFIG_LGE_DISPLAY_COMMON

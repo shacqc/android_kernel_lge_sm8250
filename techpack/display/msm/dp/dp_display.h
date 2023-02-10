@@ -148,6 +148,10 @@ int dp_display_send_id_event(struct lge_dp_display *lge_dp);
 #endif
 #if defined(CONFIG_LGE_DUAL_SCREEN)
 int is_dd_connected(void);
+bool is_dp_connected(void);
+bool is_dd_display_recovery_working(void);
+bool is_dd_display_wait_real_disconnection(void);
+bool is_dd_powermode(void);
 #endif
 
 #ifdef CONFIG_DRM_MSM_DP
