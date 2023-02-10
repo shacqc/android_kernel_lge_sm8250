@@ -2,9 +2,9 @@
  * Copyright 2014-2017 NXP Semiconductors
  */
 
-#include "dbgprint.h"
-#include "tfa_service.h"
-#include "tfa98xx_tfafieldnames.h"
+#include "inc/dbgprint.h"
+#include "inc/tfa_service.h"
+#include "inc/tfa98xx_tfafieldnames.h"
 
 /* support for error code translation into text */
 #define ERROR_MAX_LENGTH	64
